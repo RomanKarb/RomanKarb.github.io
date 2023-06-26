@@ -1,0 +1,270 @@
+<?php
+
+// подключаем файл с настройками базы данных
+if(isset($_COOKIE['login_pre_reg'])) {
+    echo '<!DOCTYPE html>
+    <html>
+    <head>
+     <title><?php echo $title ?></title>
+     <meta charset="UTF-8">
+     <link href=\'http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800\'rel=\'stylesheet\' type=\'text/css\'>
+     <style>
+        body {
+            background: linear-gradient(to bottom right, #3498db, #2c3e50);
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #000000;
+        }
+        form {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 25px;
+            padding: 60px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.25);
+        }
+            h2 {
+                color: #2c3e50;
+                font-size: 24px;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+                        p {
+                color: #2c3e50;
+                font-family: Arial;
+                font-size: 22px;
+                margin-bottom: 1px;
+                text-align: left;
+            }
+        input[type=text] {
+            font-size: 12px;
+            padding: 10px 20px;
+            border-radius: 3px;
+            border: 1px solid #ddd; /* добавляем серую рамку */
+            margin-bottom: -5px;
+            width: calc(100% - 42px); /* вычитаем размер кнопки */
+            background-color: #f2f2f2;
+            border-radius: 10px;
+        }
+            textarea[type=text]	{
+            font-size: 12px;
+            padding: 10px 20px;
+            border-radius: 3px;
+            border: 1px solid #ddd; /* добавляем серую рамку */
+            margin-bottom: 10px;
+            width: 100%;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            height: 40px;
+            min-height: 40px;
+            max-height: 300px;
+            box-sizing: border-box;
+            max-width: 100%;
+            min-width: 100%;
+        }
+        input[type=password],
+        input[type=email] {
+            display: block;
+            width: calc(100% - 42px); /* вычитаем размер кнопки */
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #555;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+        }
+            button[type=submit],
+    button[type=submit1]		{
+                font-size: 16px;
+                padding: 10px 20px;
+                border-radius: 3px;
+                border: none;
+                margin-bottom: 10px;
+                width: 100%;
+                background-color: #2c3e50;
+                color: #fff;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border-radius: 10px;
+            }
+                    button[type=submit1] {
+                background-color: grey;
+            }
+        input[type=submit]:hover {
+            background-color: #3498db;
+        }
+     </style>
+    </head>';
+
+require_once('db_config.php');
+
+session_start();
+
+if (isset($_GET['register'])) {
+if (isset($_POST['confirm'])) {
+    // проверяем код
+    if ($_POST['code'] != $_COOKIE['code_pre_reg']) {
+        header("Location: messages.php?message=Не верный код&color=red&color_form=white&title=Не верный код");
+        die();
+    }
+
+    $username = $_COOKIE['login_pre_reg'];
+    $email = $_COOKIE['email_pre_reg'];
+    $f_name = $_COOKIE['first_name_pre_reg'];
+    $s_name = $_COOKIE['last_name_pre_reg'];
+    $password = md5 ($_COOKIE['password_pre_reg']);
+    $reset_key = uniqid();
+	$reset_key_used = "0";
+	$logo = "sys_files/---default_logo---.png";
+	$open_id = rand(10000000, 99999999);
+	
+		// проверяем, что username не существует в базе данных
+	
+$sql = "SELECT * FROM users WHERE username = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$stmt->store_result();
+if ($stmt->num_rows > 0) {
+    header("Location: messages.php?message=Пользователь с таким логином уже существует&color=red&color_form=white&title=Пользователь с таким логином уже существует");
+    die();
+}
+
+	// проверяем, что email не существует в базе данных
+	
+$sql = "SELECT * FROM users WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->store_result();
+if ($stmt->num_rows > 0) {
+    header("Location: messages.php?message=Пользователь с такой почтой уже существует&color=red&color_form=white&title=Пользователь с такой почтой уже существует");
+    die();
+}
+
+    $sql = "INSERT INTO users (username, email, f_name, s_name, password, reset_key, reset_key_used, logo, open_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssssssss", $username, $email, $f_name, $s_name, $password, $reset_key, $reset_key_used, $logo, $open_id);
+    $stmt->execute();
+
+    if ($stmt->error) {
+        echo "Ошибка: " . $stmt->error;
+    } else {
+        header("Location: login.php?username=$username");
+    }
+
+    $stmt->close();
+
+    if(isset($_COOKIE['referal_pre_reg'])) {
+        $referal_pre_reg = $_COOKIE['referal_pre_reg'];
+        $sql = "UPDATE users SET connect_referal_user='$referal_pre_reg' WHERE username='$username'";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "Данные в столбце bio для пользователя $username успешно обновлены";
+            #header("Location: dashboard.php?username=$username");
+            } else {
+            echo "Ошибка при обновлении данных в столбце bio: " . $conn->error;
+            }
+   
+       if ($stmt->error) {
+           echo "Ошибка: " . $stmt->error;
+       } else {
+           #header("Location: dashboard.php?username=$username");
+       }
+    }
+    $conn->close();
+
+}
+echo "klk";
+
+
+} elseif (isset($_GET['setting'])) {
+	echo '
+	<form>
+	<h2>Завершите регистрацию</h2>
+	<p>Введите код из письма</p>
+	<input type="text" name="logo">
+	<p>Описание</p>
+	<textarea type="text" name="bio" maxlength="1000"></textarea>
+	<button type="submit1" name="next">Пропустить</button>
+	<button type="submit" name="finish">Завершить</button>
+</form>';
+
+
+} elseif (isset($_GET['next'])) {
+	$username = $_COOKIE['login_pre_reg'];
+	header("Location: dashboard.php?username=$username");
+	#
+	
+	#
+	
+	#
+	
+	#ниже обработка формы завершения регистрации
+	
+} elseif (isset($_GET['finish'])) {
+	$username = $_COOKIE['login_pre_reg'];
+	$logo = $_GET['logo'];
+	$bio = $_GET['bio'];
+	
+    // обновить данные в столбце logo для пользователя $username
+	if (isset($_GET['logo'])) {
+    $sql = "UPDATE users SET logo='$logo' WHERE username='$username'";
+	if ($conn->query($sql) === TRUE) {
+  echo "Данные в столбце logo для пользователя $username успешно обновлены";
+  #header("Location: dashboard.php?username=$username");
+} else {
+  echo "Ошибка при обновлении данных в столбце logo: " . $conn->error;
+}
+	}
+	if (isset($_GET['bio'])) {
+		echo "Данные в столбце logo для пользователя $username успешно обновлены";
+		 $sql = "UPDATE users SET logo='$bio' WHERE username='$username'";
+	     if ($conn->query($sql) === TRUE) {
+         echo "Данные в столбце bio для пользователя $username успешно обновлены";
+         #header("Location: dashboard.php?username=$username");
+         } else {
+         echo "Ошибка при обновлении данных в столбце bio: " . $conn->error;
+         }
+
+    if ($stmt->error) {
+        echo "Ошибка: " . $stmt->error;
+    } else {
+        #header("Location: dashboard.php?username=$username");
+    }
+}
+    $conn->close();
+	
+    // удаляем данные из сессии
+    unset($_SESSION['email']);
+    unset($_SESSION['f_name']);
+    unset($_SESSION['s_name']);
+    unset($_SESSION['password']);
+    unset($_SESSION['code']);
+    setcookie("referal_pre_reg", "", time()-3600);
+    setcookie("email_pre_reg", "", time()-3600);
+    setcookie("login_pre_reg", "", time()-3600);
+    setcookie("first_name_pre_reg", "", time()-3600);
+    setcookie("last_name_pre_reg", "", time()-3600);
+    setcookie("password_pre_reg", "", time()-3600);
+    setcookie("code_pre_reg", "", time()-3600);
+}
+} else {
+    echo "<title>400 - Ошибка выполнения кода</title>";
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+    $address = $_SERVER['SERVER_NAME'];
+    $port = $_SERVER['SERVER_PORT'] !== '80' ? ":{$_SERVER['SERVER_PORT']}" : "";
+    $path = $_SERVER['REQUEST_URI'];
+    $fullUrl = "{$protocol}://{$address}{$port}{$path}";
+    $url = 'http://base.roservers.com/errors/400_space_1.php?url=' . urlencode($fullUrl) . '&error=' . urlencode("if(isset(\$_COOKIE[login_pre_reg])) поэтому попробуте перезапустить браузер, затем пройти регистрацию заново");
+    $content = file_get_contents($url);
+    echo $content;
+}
+?>
+</html>

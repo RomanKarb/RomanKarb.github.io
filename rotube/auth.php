@@ -1,0 +1,45 @@
+<?php
+// начинаем сессию
+session_start();
+
+// получаем значения из GET-параметров
+$open_id = $_GET['open_id'];
+$login = $_GET['login'];
+
+// подключаемся к базе данных
+$mysqli = new mysqli('localhost', 'root', '', 'LocalUsersTest');
+
+// проверяем соединение с базой данных
+if($mysqli->connect_errno) {
+    // если ошибка - выводим сообщение с кодом ошибки и описанием
+    printf("Соединение не удалось: %s\n", $mysqli->connect_error);
+    exit();
+}
+
+// формируем запрос к базе данных
+$query = "SELECT * FROM users WHERE username='$login' OR email='$login'";
+
+// отправляем запрос к базе данных
+$result = $mysqli->query($query);
+
+// проверяем количество записей, найденных в базе данных
+if ($result->num_rows == 1) {
+   // если нашлась одна запись - получаем ее
+   $row = $result->fetch_assoc();
+   
+   // сохраняем данные в сессию
+   setcookie("username-rotube", $row['username'], time()+432000);
+   setcookie("open_id-rotube", $open_id, time()+432000);
+   
+   // выводим сообщение об успешной авторизации
+   echo "Добро пожаловать, ".$row['username']."!";
+   sleep(1); // ждем 1 секунду
+   header ("Location: load.php");
+} else {
+   // если записей не нашлось - выводим сообщение об ошибке
+   echo "Не удалось авторизоваться. Проверьте правильность введенных данных.";
+}
+
+// закрываем соединение с базой данных
+$mysqli->close();
+?>

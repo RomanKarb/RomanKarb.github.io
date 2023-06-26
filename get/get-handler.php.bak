@@ -1,0 +1,12 @@
+<?php
+if(isset($_GET["name"]) && isset($_GET["other"])) 
+?>
+<!DOCTYPE html>
+	<html lang="ru">
+<head>
+<title> Name </title>
+    </head>
+    <body>
+		<h2 style="text-align:center;">Ваше имя: <?php echo $_GET['name']; ?></h2>
+    </body>
+</html>

@@ -1,0 +1,4 @@
+<?php
+$author_name = isset($_POST['author_name'])
+echo $post
+?>

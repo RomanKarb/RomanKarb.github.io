@@ -1,0 +1,20 @@
+<?php
+$mysqli = new mysqli("localhost", "root", "", "LocalUsersTest");
+
+if($mysqli->connect_error){
+   die("Connect Error: " . $mysqli->connect_error);
+}
+
+if(isset($_POST['money']) && isset($_POST['login'])){
+   $money = $_POST['money'];
+   $login = $_POST['login'];
+   $stmt = $mysqli->prepare("UPDATE users_robank SET money=money+? WHERE login=?");
+   $stmt->bind_param("is", $money, $login);
+   $stmt->execute();
+   $stmt->close();
+}
+
+$mysqli->close();
+
+echo "Код успешно выполнен";
+?>

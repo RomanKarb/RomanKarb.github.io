@@ -1,0 +1,188 @@
+<?php
+session_start();
+
+if(isset($_GET['clear_sessions'])) {
+	$redirect_url = $_GET['redirect_url'];
+	unset($_SESSION['login']);
+	unset($_SESSION['password']);
+	header("Location: login.php?redirect_url=$redirect_url"); 
+
+} else { if(isset($_SESSION['login']) && isset($_SESSION['password'])) {
+    $login = $_SESSION['login'];
+    $password = $_SESSION['password'];
+	
+	    // выполним запрос MySQL
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "LocalUsersTest";
+
+    // Создание соединения
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Проверка соединения
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Выполним запрос, чтобы получить open_id пользователя по его логину
+    $sql = "SELECT open_id FROM users WHERE username = '$login'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        // Если пользователь найден, добавляем open_id в URL
+        $row = $result->fetch_assoc();
+        $open_id = $row["open_id"];
+    } else {
+        echo "Пользователь не найден";
+		header("Location: messages.php?message=Пользователь \"$login\" не найден!&color=red&color_form=white&title=Пользователь не найден!");
+        $conn->close();
+        exit();
+    }
+    
+
+
+    if(isset($_GET['redirect_url'])) {
+        $redirect_url_1 = $_GET['redirect_url'];
+		$redirect_url = $_GET['redirect_url'];
+
+        // проверяем, что URL является валидным
+        if(filter_var($redirect_url, FILTER_VALIDATE_URL)) {
+            $url_components = parse_url($redirect_url);
+            $query_string = isset($url_components['query']) ? $url_components['query'] : '';
+            $redirect_url = $url_components['scheme'] . '://' . $url_components['host'] . $url_components['path'];
+
+// добавляем логин и open_id к запросу
+if(!empty($query_string)) {
+    $query_string .= '&login=' . urlencode($login) . '&open_id=' . urlencode($open_id);
+} else {
+    $query_string = 'login=' . urlencode($login) . '&open_id=' . urlencode($open_id);
+}
+
+            // отправляем GET запрос
+            header('Location: ' . $redirect_url . '?' . $query_string);
+        } else {
+            echo 'Неправильный URL';
+			header("Location: messages.php?message=Неправильный Redirect URL \"$redirect_url\"&color=red&color_form=white&title=Неправильный URL");
+        }
+    } else {
+        header('Location: dashboard.php?username=' . $login);
+    }
+}
+} #else {
+    // перенаправляем на страницу входа
+    #$redirect_url = isset($_GET['redirect_url']) ? $_GET['redirect_url'] : '';
+    #header('Location: http://base.roservers.com/authorization/login.php?redirect_url=' . urlencode($redirect_url));
+#}
+?>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Вход в систему</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'rel='stylesheet' type='text/css'>
+<style>
+        body {
+            background: linear-gradient(to bottom right, #3498db, #2c3e50);
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        form {
+            width: 100%;
+            max-width: 400px;
+            background-color: #fff;
+            border-radius: 25px;
+            padding: 60px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.25);
+        }
+        h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+		        p {
+            color: #2c3e50;
+			font-family: Arial;
+            font-size: 22px;
+            margin-bottom: 1px;
+            text-align: left;
+        }
+        input[type=text] {
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 3px;
+            border: 1px solid #CCCCCC; /* добавляем серую рамку */
+            margin-bottom: 10px;
+            width: calc(100% - 42px); /* вычитаем размер кнопки */
+            background-color: #f2f2f2;
+            border-radius: 10px;
+			margin-bottom: -5px;
+        }
+        input[type=password] {
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 3px;
+            border: 1px solid #CCCCCC; /* добавляем серую рамку */
+            margin-bottom: 10px;
+            width: calc(100% - 42px); /* вычитаем размер кнопки */
+            background-color: #f2f2f2;
+            border-radius: 10px;
+        }
+        label[for="username"],
+        label[for="password"] {
+            margin-bottom: 70px;
+        }
+        button[type=submit] {
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 3px;
+            border: none;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        a {
+            display: block;
+            color: #2c3e50;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        button[type=submit] {
+            background-color: #2c3e50;
+            color: #fff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        button[type=submit]:hover {
+            background-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <form action="log.php?redirect_url=<?php echo $_GET['redirect_url']; ?>" method="post">
+        <h2>Вход в систему</h2>
+        <div class="form-group">
+            <p for="username">Логин, почта:</p>
+			<input type="text" id="username" name="username" placeholder="Логин, почта" required>
+        </div>
+        <div class="form-group">
+            <p for="password">Пароль:</p>
+            <input type="password" id="password" name="password" placeholder="Пароль" required>
+        </div>
+        <a href="reset_password<?php 
+		if(isset($_GET['redirect_url'])) {
+			$redirect_url = $_GET['redirect_url'];
+		echo "?redirect_url=" . $redirect_url; }
+		?>">Забыли пароль</a>
+        <button type="submit" name="login">Вход</button>
+    </form>
+</body>
+</html>

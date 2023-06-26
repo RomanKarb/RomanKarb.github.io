@@ -1,0 +1,38 @@
+<?php
+// подключаем файл с настройками базы данных
+require_once('db_config.php');
+
+// Получаем данные из POST запроса
+$username = $_POST['login'];
+$password = md5($_POST['password']);
+$email = $_POST['email'];
+$f_name = $_POST['f_name'];
+$s_name = $_POST['s_name'];
+$reset_key = uniqid();
+
+// Получаем код из параметров запроса
+$userCode = $_POST['code'];
+// Получаем код, отправленный на электронную почту пользователя
+$emailCode = $_POST['email_code']; // замените на код, отправленный на почту
+
+if ($userCode != $emailCode){
+    // Ошибка, коды не совпадают
+    $message = "Неверный код подтверждения из почты, Пожалуйста, проверьте код и повторите попытку.";
+    include 'register.php'; // Отобразить форму регистрации для повторного ввода данных
+    exit;
+}
+
+// Готовим SQL запрос для записи в базу данных
+$sql = "INSERT INTO users (username, password, email, f_name, s_name, reset_key_used, reset_key, confirmation_code) VALUES ('$username', '$password', '$email', '$f_name', '$s_name', '0', '$reset_key', '0')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "<div class='alert alert-success'>Вы успешно зарегистрировались!</div>";
+	header("Location: dashboard.php?username=$username");
+} else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+}
+
+// Закрываем соединение с базой данных
+$conn->close();
+?>
+

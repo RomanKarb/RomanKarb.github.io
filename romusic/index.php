@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>RoMusics</title>
+ <style>
+  body {
+   background: linear-gradient(to bottom right, #3498db, #2c3e50);
+   font-family: Arial, sans-serif;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   min-height: 100vh;
+   margin: 0;
+   overflow: hidden;
+  }
+
+  form {
+   width: 100%;
+   max-width: 600px;
+   background-color: #fff;
+   border-radius: 25px;
+   padding: 60px;
+   box-shadow: 0px 0px 10px rgba(0,0,0,0.25);
+   overflow-y: scroll;
+   height: 500px;
+  }
+  
+  form::-webkit-scrollbar {
+    width: 12px;
+    bottom: 10px;
+  }
+
+  form::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  form::-webkit-scrollbar-thumb {
+    background-color: grey;
+    border-radius: 20px;
+    border: transparent;
+  }
+
+  .content {
+   position: relative;
+   z-index: 1;
+  }
+
+  .song-container {
+   display: flex;
+   align-items: center;
+   margin-bottom: 20px;
+   padding: 10px;
+   border-radius: 25px;
+   cursor: pointer;
+  }
+
+  .song-container:hover {
+   background-color: #f8f8f8;
+  }
+
+  .song-image {
+   width: 70px;
+   height: 70px;
+   border-radius: 15px;
+   margin-right: 10px;
+  }
+
+  .song-title {
+   margin: 0;
+   font-size: 1.5rem;
+   text-align: center;
+  }
+
+  .song-author {
+   margin: 0;
+   font-size: 1rem;
+  }
+   h2 {
+   color: #2c3e50;
+   font-size: 24px;
+   margin-bottom: 20px;
+   text-align: center;
+        }
+ </style>
+</head>
+<body>
+ <form>
+ <?php
+  $servername = "localhost";
+  $username = "root";
+  $password = "";
+  $dbname = "LocalUsersTest";
+
+  // Create connection
+  $conn = new mysqli($servername, $username, $password, $dbname);
+  // Check connection
+  if ($conn->connect_error) {
+   die("Connection failed: " . $conn->connect_error);
+  }
+
+  $sql = "SELECT * FROM RoMusics";
+  $result = $conn->query($sql);
+
+  if ($result->num_rows > 0) {
+	  echo '<h2>В базе найдено:</h2>';
+   while($row = $result->fetch_assoc()) {
+    echo '<div class="song-container" onclick="location.href=\'music/'.urlencode($row["author"]).'/'.urlencode($row["title"]).'.php\'">';
+    echo '<img class="song-image" src="'.resize_image($row["image"]).'">';
+    echo '<div>';
+    echo '<h2 class="song-title">'.$row["title"].'</h2>';
+    echo '<p class="song-author">'.$row["author"].'</p>';
+    echo '</div>';
+    echo '</div>';
+   }
+  } else {
+   echo '<h2>Нет результатов поиска</h2>';
+  }
+
+  function resize_image($image_path) {
+   list($width, $height) = getimagesize($image_path);
+
+   if($width > $height) {
+    $new_width = 70;
+    $new_height = $height * (70 / $width);
+   } else {
+    $new_height = 70;
+    $new_width = $width * (70 / $height);
+   }
+   $image_p = imagecreatetruecolor($new_width, $new_height);
+   $image = imagecreatefromjpeg($image_path);
+   imagecopyresampled($image_p, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+   ob_start();
+   imagepng($image_p);
+   $image_data = ob_get_contents();
+   ob_end_clean();
+
+   return 'data:image/png;base64,'.base64_encode($image_data);
+  }
+
+  $conn->close();
+ ?>
+ </form>
+
+</body>
+</html>

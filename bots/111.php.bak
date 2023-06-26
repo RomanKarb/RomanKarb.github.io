@@ -1,0 +1,24 @@
+<?php
+// Задаем токен нашего бота
+define('BOT_TOKEN', '6117896964:AAGNr0UHD4gaCKk9OWN_SN4krj2bKJmXR7M');
+
+// Создаем функцию отправки сообщений
+function sendMessage($chat_id, $message) {
+    $url = "https://api.telegram.org/bot".BOT_TOKEN."/sendMessage?chat_id=".$chat_id."&text=".urlencode($message);
+    file_get_contents($url);
+}
+
+// Получаем запрос от Telegram
+$update = json_decode(file_get_contents('php://input'), TRUE);
+
+// Получаем текст сообщения
+$text = $update['message']['text'];
+
+// Получаем chat_id пользователя
+$chat_id = $update['message']['chat']['id'];
+
+// Если пользователь отправил "привет", отправляем ответ
+if ($text == 'привет') {
+    sendMessage($chat_id, 'Здравствуйте!');
+}
+?>

@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule ^watch$ watch.php [L]
+RewriteRule ^watch/([0-9a-zA-Z_-]+)$ watch.php?id=$1 [L]
+RewriteRule ^load$ load.php [L]
+RewriteRule ^load/([0-9a-zA-Z_-]+)$ load.php?id=$1 [L]

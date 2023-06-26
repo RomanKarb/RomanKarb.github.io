@@ -1,0 +1,77 @@
+<?php
+// Сохранение данных приложения в базу данных
+$author_name = isset($_POST['author_name']) ? $_POST['author_name'] : '';
+$email = isset($_POST['email']) ? $_POST['email'] : '';
+$app_name = isset($_POST['app_name']) ? $_POST['app_name'] : '';
+$redirect_url = isset($_POST['redirect_url']) ? $_POST['redirect_url'] : '';
+$description = isset($_POST['description']) ? $_POST['description'] : false;
+$id = uniqid();
+
+//if (!$description) {
+//   die('Укажите данные, которые необходимо получить.');
+//}
+
+// Сохраняем информацию об приложении в базе данных
+$conn = mysqli_connect('localhost', 'root', '', 'LocalUsersTest');
+$query = "INSERT INTO apps (id, author_name, email, app_name, redirect_url, description) VALUES ('$id', '$author_name', '$email', '$app_name', '$redirect_url', '$description')";
+mysqli_query($conn, $query);
+mysqli_close($conn);
+
+// Генерируем ссылку для авторизации
+$auth_url = sprintf('auth.php?id=%s&redirect=%s', $id, $redirect_url);
+$auth_url .= '&target=_blank'; // добавляем атрибут "target"
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Создание приложения авторизации</title>
+</head>
+<body>
+<h1>Создание приложения авторизации</h1>
+<form method="post" action="">
+    <p>
+        <label for="author_name">Имя автора:</label>
+        <input type="text" name="author_name" id="author_name" required>
+    </p>
+    <p>
+        <label for="email">E-mail:</label>
+        <input type="email" name="email" id="email" required>
+    </p>
+    <p>
+        <label for="app_name">Название приложения:</label>
+        <input type="text" name="app_name" id="app_name" required>
+    </p>
+    <p>
+        <label for="redirect_url">Ссылка переадресации:</label>
+        <input type="url" name="redirect_url" id="redirect_url" required>
+    </p>
+    <p>
+        <label>Данные, которые необходимо получить:</label>
+    </p>
+    <p>
+        <input type="checkbox" name="description[]" id="description_id" value="id" checked>
+        <label for="description_id">ID человека</label>
+    </p>
+    <p>
+        <input type="checkbox" name="description[]" id="description_nickname" value="nickname">
+        <label for="description_nickname">Ник</label>
+    </p>
+    <p>
+        <input type="checkbox" name="description[]" id="description_firstname" value="firstname">
+        <label for="description_firstname">Имя</label>
+    </p>
+    <p>
+        <input type="checkbox" name="description[]" id="description_lastname" value="lastname">
+        <label for="description_lastname">Фамилия</label>
+    </p>
+    <p>
+        <input type="submit" value="Создать">
+    </p>
+</form>
+
+<p>Ссылка для авторизации: <a href="<?php echo $auth_url; ?>"><?php echo $auth_url; ?></a></p>
+
+</body>
+</html>

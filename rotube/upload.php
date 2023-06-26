@@ -1,0 +1,48 @@
+<?php
+session_start();
+$id = uniqid();
+
+// Проверка наличия файла
+if (!isset($_FILES['video']) || !is_uploaded_file($_FILES['video']['tmp_name'])) {
+    die('Ошибка: файл не найден');
+}
+
+// Проверка типа загружаемого файла
+$allowedTypes = ['video/mp4', 'video/mpeg', 'video/avi', 'video/mkv', 'video/mov']; // Добавьте другие типы, если нужно
+if (!in_array($_FILES['video']['type'], $allowedTypes)) {
+  die("Ошибка: неподдерживаемый тип файла");
+}
+
+$file = $_FILES['video']['tmp_name'];
+$title = $_POST['title'];
+$description = $_POST['bio'];
+$username_rotube = $_COOKIE['username-rotube'];
+
+// Генерация уникального имени файла с проверкой на русские буквы
+$filename = uniqid() . '.' . pathinfo($_FILES['video']['name'], PATHINFO_EXTENSION);
+$filename = iconv('utf-8', 'cp1251', $filename); // Преобразование к кодировке Windows-1251
+$filename = preg_replace('/\s+/', '_', $filename); // Замена пробелов на символ подчеркивания
+$filename = basename($filename);
+
+// Сохранение файла на сервере
+$path = '/rotube/video/upload/' . $filename;
+if (!move_uploaded_file($file, $_SERVER['DOCUMENT_ROOT'] . $path)) {
+    die('Ошибка при сохранении файла');
+}
+
+$autor = $_COOKIE['username-rotube'];
+// Сохранение информации о видео в базе данных
+$conn = new mysqli('localhost', 'root', '', 'LocalUsersTest');
+$stmt = $conn->prepare('INSERT INTO RoTUbe (id, filename, title, description, autor) VALUES (?, ?, ?, ?, ?)');
+$stmt->bind_param('sssss', $id, $filename, $title, $description, $username_rotube);
+$stmt->execute();
+
+// Генерация уникальной ссылки на видео
+#$id = $conn->insert_id;
+$link = 'http://base.roservers.com/rotube/watch?id=' . $id;
+$link_1 = 'http://base.roservers.com/rotube/watch';
+$link_2 = 'id=' . $id;
+
+echo 'Видео успешно загружено. Ссылка: ' . $link;
+header("Location: http://base.roservers.com/authorization/messages.php?message=Видео успешно загружено, ссылка на видео: &message2=$link&color=&color_form=white&title=Видео успешно загружено&button_text=Смотреть&button=1&action=$link_1&action2=$link_2");
+?>

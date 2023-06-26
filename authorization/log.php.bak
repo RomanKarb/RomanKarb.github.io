@@ -1,0 +1,41 @@
+<?php
+// Устанавливаем соединение с базой данных
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "LocalUsersTest";
+$redirect_url = $_GET['redirect_url'];
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Проверяем соединение
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+if (isset($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = md5($_POST['password']);
+
+    $sql = "SELECT * FROM users WHERE username='$username' OR email='$username' AND password='$password'";
+    $result = mysqli_query($conn, $sql);
+
+    if (mysqli_num_rows($result) > 0) {
+		$row = mysqli_fetch_assoc($result);
+		session_start();
+        $_SESSION['username'] = $row['username'];
+        $_SESSION['id'] = $row['id'];
+		$_SESSION['login'] = $username;
+		$_SESSION['password'] = $password;
+		
+		if(isset($_GET['redirect_url'])) {
+			$redirect_url = $_GET['redirect_url'];
+		    header("Location: login.php?redirect_url=$redirect_url");
+		} else {
+        header("Location: dashboard.php?username=$username"); }
+    } else {
+        echo "<div class='alert alert-danger'>Не верный логин или пароль!</div>";
+		header("Location: messages.php?message=Не верный логин или пароль!&color=red&color_form=white&title=Не верный логин или пароль!");
+    }
+}
+?>

@@ -1,0 +1,53 @@
+ <?php
+  // Подключение к базе данных
+  $host = 'localhost';
+  $user = 'root';
+  $password = '';
+  $db_name = 'LocalUsersTest';
+  $link = mysqli_connect($host, $user, $password, $db_name);
+  
+  // Получение данных пользователя из базы данных
+  $username = mysqli_real_escape_string($link, $_GET['username']);
+  $query = "SELECT f_name, s_name, username FROM users WHERE username='$username' OR email='$username'";
+  $result = mysqli_query($link, $query);
+  
+  if (mysqli_num_rows($result) > 0) {
+   while ($row = mysqli_fetch_assoc($result)) {
+    echo "<p>Имя: " . $row['f_name'] . " Фамилия: " . $row['s_name'] . "</p>";
+	$user_name = $row['username'];
+	$f_name = $row['f_name'];
+	$s_name = $row['s_name'];
+   }
+  } else {
+   echo "<p>Данные о пользователе не найдены</p>";
+  }
+  
+  mysqli_close($link);
+ ?>
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Профиль пользователя: <?php echo $user_name; ?></title>
+ <style>
+  body {
+   background-color: #F8F8F8;
+   font-family: Arial, sans-serif;
+  }
+  h1 {
+   font-size: 36px;
+   text-align: center;
+   margin-top: 50px;
+  }
+  p {
+   font-size: 24px;
+   margin-left: 50px;
+   margin-top: 30px;
+  }
+ </style>
+</head>
+<body>
+ <h1>Профиль пользователя: <?php echo $user_name; ?></h1>
+ <h1>Имя: <?php echo $f_name; ?></h1>
+ <h1>Фамилия: <?php echo $s_name; ?></h1>
+</body>
+</html>

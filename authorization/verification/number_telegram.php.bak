@@ -1,0 +1,28 @@
+<?php
+
+// конфигурация бота Telegram
+$telegram_bot_token = 'YOUR_TELEGRAM_BOT_TOKEN';
+$telegram_bot_url = "https://api.telegram.org/bot{$telegram_bot_token}";
+
+// отправка сообщения и получение chat_id
+$phone_number = $_POST['phone_number'];
+$response = file_get_contents($telegram_bot_url . "/sendMessage?text={$phone_number}");
+$response = json_decode($response, true);
+$chat_id = $response['chat']['id'];
+
+// сохранение chat_id в сессию
+session_start();
+$_SESSION['chat_id'] = $chat_id;
+
+// генерация и отправка кода на телефон
+$verification_code = generate_verification_code(); // функция для генерации уникального кода
+send_verification_code($phone_number, $verification_code); // функция для отправки кода на телефон
+
+// вывод сообщения и формы подтверждения кода на сайте
+echo "Код подтверждения отправлен на номер {$phone_number}. Введите код:";
+echo "<form method='post' action='check_code.php'>";
+echo "<input type='text' name='verification_code' required>";
+echo "<input type='submit' value='Подтвердить'>";
+echo "</form>";
+
+?>

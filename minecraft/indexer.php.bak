@@ -1,0 +1,22 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Minecraft Skin Viewer</title>
+    <script src="https://threejs.org/build/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<div>
+    <label>Введите никнейм Minecraft:</label>
+    <input type="text" id="nickname" name="nickname">
+    <button onclick="loadSkin()">Загрузить скин</button>
+</div>
+<div>
+    <canvas id="cnv"></canvas>
+    <button onclick="saveSkin()">Сохранить скин</button>
+</div>
+
+<script src="viewer.js"></script>
+</body>
+</html>
