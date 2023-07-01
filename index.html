@@ -123,8 +123,17 @@
       width: 70px;
       height: 50px;
       background-image: url('logo.png');
-      background-size: cover;
+      background-repeat: no-repeat;
+      background-size:contain;
       cursor: pointer; /* добавляем стиль указателя при наведении */
+    }
+
+    h3 {
+      left: 60px;
+      position: absolute;
+      font-size: 30px;
+      font-family: Arial, Helvetica, sans-serif;
+      cursor: pointer;
     }
 
     .buttons {
@@ -221,6 +230,7 @@ background-image: linear-gradient(to right, lightgray, white);
 <div class="header">
     <div class="header-content">
       <div class="logo"></div>
+      <h3>ChickenRP</h3>
       <div class="buttons">
         <a href="#" class="button">Домой</a>
         <a href="#" class="button">Контакты</a>
@@ -315,6 +325,9 @@ background-image: linear-gradient(to right, lightgray, white);
 </body>
 <script>
     document.querySelector('.logo').addEventListener('click', function() {
+      location.href = 'site copy.php'; // перенаправление на site copy.php при клике на логотип
+    });
+    document.querySelector('h3').addEventListener('click', function() {
       location.href = 'site copy.php'; // перенаправление на site copy.php при клике на логотип
     });
   </script>
