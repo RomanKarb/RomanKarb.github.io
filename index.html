@@ -1,1 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Сайт по Minecraft</title>
+  <style>
 
+    .players_tab {
+      margin-bottom: 30px;
+    }
+
+    body {
+  background-image: url('Без имени 3.png');
+  background-repeat: no-repeat;
+  background-size:cover;
+  position: relative;
+  overflow-y:scroll; /* Заменяем hidden на scroll */
+  scroll-behavior: smooth;
+  z-index: -100;
+}
+       
+.content {
+  padding-top: 200px;
+      text-align: center;
+      color: white;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fade-in 0.5s ease 0.6s forwards;
+      scroll-behavior: smooth;
+      overflow-y: hidden;
+     /* height: calc(100vh - 200px);
+      --content-height: auto; */
+}
+
+.blur-background { /*   <div class="blur-background"></div> */
+  position:fixed;
+  transform: translateY(10px);
+  top: -10px;
+  width: 100%;
+  height: 7000px;
+  background-image: url('Без имени 3.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: -1;
+}
+
+    /* Добавляем стили для полосы прокрутки */
+.content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 10px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+    /* Добавляем стили для полосы прокрутки */
+    body::-webkit-scrollbar {
+      width: 10px;
+      background: #bfad0d;
+      z-index: -100000;
+    }
+
+    body::-webkit-scrollbar-thumb {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    body::-webkit-scrollbar-track {
+      background: transparent;
+      z-index: -100000; /* Добавляем этот стиль для задания z-index для фона полосы прокрутки */
+    }
+
+    @keyframes fade-in {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .button-main {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .header {
+      left: 0px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 60px;
+      background-color: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+
+    .header-content {
+      margin-right: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0px 5px;
+      color: white;
+      
+    }
+    .logo {
+      margin-top: 5px;
+      width: 70px;
+      height: 50px;
+      background-image: url('logos.png');
+      background-size: cover;
+      cursor: pointer; /* добавляем стиль указателя при наведении */
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: calc(100% - 50px);
+    }
+
+    .button {
+margin-left: 10px;
+padding: 10px 20px;
+border-radius: 30px;
+border: 1px solid white;
+background-color: transparent;
+font-weight: bold;
+text-decoration: none;
+font-size: 14px;
+background-image: linear-gradient(to right, lightgray, white);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+    }
+    
+    .button:hover {
+      font-size: 16px;
+    }
+
+    h2 {
+      margin-bottom: 2px;
+    }
+
+    .progress-bar {
+      animation: fade-in 0.5s ease 0s forwards;
+      display: none;
+      left: calc(50% - 250px);
+      position:relative;
+            width: 500px;
+            height: 30px;
+            border: 2px solid grey;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: grey;
+        }
+        
+        .progress-fill {
+          animation: fade-in 0.5s ease 0s forwards;
+            height: 100%;
+            background: linear-gradient(to right, #0eab99, #05a7b3);
+            border-radius: 10px;
+        }
+
+        form[type=message_back]{
+          position: fixed;
+          background-color: rgba(0, 0, 0, 0.7);
+          left: -2%;
+          width: 104%;
+          top: -2%;
+          height: 105%;
+          z-index: 900000;
+          border-radius: 3vh;
+          filter: blur(20px);
+          
+        }
+
+        form[type=message]{
+          position: fixed;
+          background-color: white;
+          width: 100vh;
+          height: 60vh;
+          top: calc(50% - 30vh);
+          left: calc(50% - 50vh);
+          z-index: 1000000;
+          border-radius: 3vh;
+        }
+
+        .hidden {
+  display: none;
+}
+  </style>
+      <script>
+
+    </script>
+
+</head>
+
+<body>
+  <form id="messageBackForm" class="hidden" type="message_back"></form>
+<form id="messageForm" class="hidden" type="message">
+  <h2>dwdwdwdddw</h2>
+  <button type="button" onclick="removeForms()">Удалить формы</button>
+</form>
+
+
+<div class="header">
+    <div class="header-content">
+      <div class="logo"></div>
+      <div class="buttons">
+        <a href="#" class="button">Домой</a>
+        <a href="#" class="button">Контакты</a>
+        <a href="#" class="button">О сервере</a>
+        <a href="#" class="button">Войти</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="players_tab">
+  <div id="online-players"></div>
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+    </div>
+    <h2>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a>    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a>    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a>    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a><h1>Это сайт по Minecraft</h1>
+    <a href="#" class="button-main">Войти</a>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="monitor.js"></script>
+    <script src="forms_message.js"></script>
+</body>
+<script>
+    document.querySelector('.logo').addEventListener('click', function() {
+      location.href = 'site copy.php'; // перенаправление на site copy.php при клике на логотип
+    });
+  </script>
+</html>
